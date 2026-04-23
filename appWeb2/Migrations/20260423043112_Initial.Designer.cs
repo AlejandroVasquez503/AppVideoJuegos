@@ -12,7 +12,7 @@ using appWeb2.Data;
 namespace appWeb2.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260421172810_Initial")]
+    [Migration("20260423043112_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace appWeb2.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.6")
+                .HasAnnotation("ProductVersion", "10.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

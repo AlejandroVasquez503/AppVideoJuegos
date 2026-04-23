@@ -4,6 +4,7 @@ using appWeb2.Data;
 using appWeb2.Models;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace appWeb2.Controllers
 {
@@ -29,8 +30,8 @@ namespace appWeb2.Controllers
 
             try
             {
-                var returnUrl = Url.Action("ApproveOrder", "Payment", null, Request.Scheme);
-                var cancelUrl = Url.Action("CancelOrder", "Payment", null, Request.Scheme);
+                var returnUrl = Url.Action("ApproveOrder", "Payment", null, Request.Scheme, Request.Host.ToString());
+                var cancelUrl = Url.Action("CancelOrder", "Payment", null, Request.Scheme, Request.Host.ToString());
 
                 var orderId = await _paypalService.CreateOrderAsync(
                     request.Amount,
@@ -43,7 +44,8 @@ namespace appWeb2.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { error = ex.Message });
+                Console.WriteLine($"Error en CreateOrder: {ex.Message}");
+                return BadRequest(new { error = "Error al procesar la orden de pago" });
             }
         }
 
@@ -53,27 +55,50 @@ namespace appWeb2.Controllers
         [HttpGet]
         public async Task<IActionResult> ApproveOrder(string token)
         {
+            Console.WriteLine($"=== ApproveOrder iniciado con token: {token} ===");
+            
             if (string.IsNullOrEmpty(token))
+            {
+                Console.WriteLine("ERROR: Token nulo o vacío");
                 return BadRequest("Token no válido");
+            }
 
             try
             {
+                Console.WriteLine("Intentando capturar orden en PayPal...");
                 var orderJson = await _paypalService.CaptureOrderAsync(token);
+                Console.WriteLine($"Orden capturada: {orderJson}");
 
                 // Validar estado del pago
-                if (orderJson.TryGetProperty("status", out var statusEl) && statusEl.GetString() != "COMPLETED")
+                if (orderJson.TryGetProperty("status", out var statusEl))
                 {
+                    string status = statusEl.GetString();
+                    Console.WriteLine($"Estado del pago: {status}");
+                    
+                    if (status != "COMPLETED")
+                    {
+                        Console.WriteLine($"ERROR: Estado no completado: {status}");
+                        return RedirectToAction("PaymentFailed");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("ERROR: No se encontró propiedad 'status' en la respuesta");
                     return RedirectToAction("PaymentFailed");
                 }
 
-                // Guardar información de la compra en la BD
+                Console.WriteLine("Guardando información de la compra en BD...");
                 await SavePurchaseAsync(orderJson, token);
+                Console.WriteLine("Compra guardada exitosamente");
 
+                Console.WriteLine("Redirigiendo a PaymentSuccess...");
                 return RedirectToAction("PaymentSuccess", new { orderId = token });
             }
             catch (Exception ex)
             {
-                return RedirectToAction("PaymentFailed", new { error = ex.Message });
+                Console.WriteLine($"ERROR en ApproveOrder: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                return RedirectToAction("PaymentFailed", new { error = "Error al procesar el pago aprobado" });
             }
         }
 
@@ -118,6 +143,90 @@ namespace appWeb2.Controllers
         }
 
         /// <summary>
+        /// Acción de compra desde el home - obtiene datos del juego y redirige a pago
+        /// </summary>
+        [HttpGet]
+        public IActionResult ComprarJuego(int juegoId)
+        {
+            try
+            {
+                // Obtener datos del juego desde la base de datos
+                var juego = _context.VideoJuegos
+                    .Include(v => v.Categoria)
+                    .FirstOrDefault(v => v.Id == juegoId);
+
+                if (juego == null)
+                {
+                    return NotFound("Videojuego no encontrado");
+                }
+
+                // Guardar datos en sesión para el proceso de pago
+                HttpContext.Session.SetString("JuegoId", juego.Id.ToString());
+                HttpContext.Session.SetString("Cantidad", "1");
+                
+                // Redirigir a PagoSimple con los datos reales del juego
+                return RedirectToAction("PagoSimple", new { 
+                    juegoId = juego.Id, 
+                    monto = juego.precio 
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en ComprarJuego: {ex.Message}");
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
+        /// <summary>
+        /// Página de pago simple para prueba (sin carrito)
+        /// </summary>
+        [HttpGet]
+        public IActionResult PagoSimple(int juegoId = 1, decimal monto = 59.99m)
+        {
+            try
+            {
+                // Obtener datos del juego desde la base de datos
+                var juego = _context.VideoJuegos
+                    .Include(v => v.Categoria)
+                    .FirstOrDefault(v => v.Id == juegoId);
+
+                if (juego != null)
+                {
+                    // Usar datos reales del juego
+                    ViewBag.JuegoId = juego.Id;
+                    ViewBag.Monto = juego.precio;
+                    ViewBag.NombreJuego = juego.titulo;
+                    ViewBag.Descripcion = juego.descripcion;
+                    ViewBag.Categoria = juego.Categoria?.categoria;
+                    ViewBag.Imagen = juego.imagen;
+                }
+                else
+                {
+                    // Valores por defecto si no se encuentra el juego
+                    ViewBag.JuegoId = juegoId;
+                    ViewBag.Monto = monto;
+                    ViewBag.NombreJuego = "Videojuego no encontrado";
+                    ViewBag.Descripcion = "";
+                    ViewBag.Categoria = "";
+                    ViewBag.Imagen = "";
+                }
+                
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en PagoSimple: {ex.Message}");
+                ViewBag.JuegoId = juegoId;
+                ViewBag.Monto = monto;
+                ViewBag.NombreJuego = "Error cargando datos";
+                ViewBag.Descripcion = "";
+                ViewBag.Categoria = "";
+                ViewBag.Imagen = "";
+                return View();
+            }
+        }
+
+        /// <summary>
         /// Guardar detalles de la compra en la BD
         /// </summary>
         private async Task SavePurchaseAsync(JsonElement paypalOrder, string transactionId)
@@ -128,8 +237,20 @@ namespace appWeb2.Controllers
                 var userIdStr = HttpContext.Session.GetString("UsuarioId");
                 if (!int.TryParse(userIdStr, out int usuarioId))
                 {
-                    throw new Exception("Usuario no autenticado");
+                    // Si no hay usuario en sesión, usar un usuario por defecto para pruebas
+                    Console.WriteLine("WARNING: No hay UsuarioId en sesión, usando usuario por defecto para pruebas");
+                    usuarioId = 1; // Usuario por defecto para pruebas - cambiar en producción
                 }
+
+                // Obtener datos del carrito desde la sesión (temporalmente usaremos un juego de ejemplo)
+                var juegoIdStr = HttpContext.Session.GetString("JuegoId");
+                var cantidadStr = HttpContext.Session.GetString("Cantidad");
+                
+                if (!int.TryParse(juegoIdStr, out int videoJuegosId))
+                    videoJuegosId = 1; // Valor por defecto si no hay sesión
+                    
+                if (!int.TryParse(cantidadStr, out int cantidad))
+                    cantidad = 1; // Valor por defecto si no hay sesión
 
                 // Crear compra
                 var compra = new Compra
@@ -148,18 +269,39 @@ namespace appWeb2.Controllers
                     var firstUnit = purchaseUnits[0];
                     if (firstUnit.TryGetProperty("amount", out var amountObj) && amountObj.TryGetProperty("value", out var valueEl))
                     {
-                        decimal.TryParse(valueEl.GetString(), out total);
+                        string valorStr = valueEl.GetString();
+                        Console.WriteLine($"Valor extraído de PayPal: {valorStr}");
+                        if (decimal.TryParse(valorStr, out decimal montoParseado))
+                        {
+                            total = montoParseado;
+                            Console.WriteLine($"Monto parseado exitosamente: {total}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Error parseando monto: {valorStr}");
+                        }
+                    }
+                }
+                
+                // Si no se pudo obtener el monto de PayPal, usar el precio del juego
+                if (total == 0)
+                {
+                    var juego = _context.VideoJuegos.FirstOrDefault(v => v.Id == videoJuegosId);
+                    if (juego != null)
+                    {
+                        total = juego.precio;
+                        Console.WriteLine($"Usando precio del juego como fallback: {total}");
                     }
                 }
 
-                // Crear detalles de compra (asume que hay datos en sesión sobre los items)
+                // Crear detalles de compra con datos dinámicos
                 var detalleCompra = new DetalleCompra
                 {
                     idCompra = compra.Id,
-                    VideoJuegosId = 1,  // ❌ ESTO ESTÁ HARDCODEADO (siempre es 1)
-                    cantidad = 1,       // ❌ ESTO TAMBIÉN ESTÁ HARDCODEADO
-                    total = total,      // ✅ Esto sí viene de PayPal
-                    estadoCompra = "1",
+                    VideoJuegosId = videoJuegosId,
+                    cantidad = cantidad,
+                    total = total,
+                    estadoCompra = "Pagado",
                     fechaHoraTransaccion = DateTime.Now,
                     codigoTransaccion = transactionId
                 };
@@ -170,6 +312,7 @@ namespace appWeb2.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error guardando compra: {ex.Message}");
+                throw;
             }
         }
     }

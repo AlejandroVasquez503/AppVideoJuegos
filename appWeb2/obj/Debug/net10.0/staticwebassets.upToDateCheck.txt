@@ -2,6 +2,7 @@ wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\imagenes\03241379-e171-4532-82fd-ec8dd556ed0d.jpg
 wwwroot\imagenes\05df18bd-16a3-4f04-b11f-e7612f8c234d.jpg
+wwwroot\imagenes\1e20ed84-597d-4613-8177-c471d16ce09e.jpg
 wwwroot\imagenes\218a1c2d-d399-462c-a448-befd30fdcd34.jpg
 wwwroot\imagenes\25ddf536-69b9-494f-8473-a0e2cff75a75.jpg
 wwwroot\imagenes\29029f48-7cf6-4f50-968a-a04a764944f6.jpg
@@ -22,6 +23,7 @@ wwwroot\imagenes\8821ce3c-c4a0-42da-99e6-94366a300a6a.jpg
 wwwroot\imagenes\a24d54d9-a446-4fee-9c20-c322e4c30dba.jpg
 wwwroot\imagenes\a35b7e6e-7d1c-4d69-b115-0b690e5fb9b0.jpg
 wwwroot\imagenes\a595d74f-800a-44b2-9d88-0a2bc8fabd81.jpg
+wwwroot\imagenes\ad9aaef6-1210-4728-abaa-7a19a7a43eaf.jpg
 wwwroot\imagenes\b0c6f8f2-c5e9-4475-aebf-f42d2fbb7709.png
 wwwroot\imagenes\b5e7b557-a68d-4b22-8e88-c1874424b599.jpg
 wwwroot\imagenes\banner.png

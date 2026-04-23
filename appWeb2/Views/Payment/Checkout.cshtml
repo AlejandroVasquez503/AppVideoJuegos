@@ -19,7 +19,7 @@
 </div>
 
 <!-- Script de PayPal -->
-<script src="https://www.paypal.com/sdk/js?client-id=ASRLqkVcGuPjeTBpDM6N6MJufCYhvpj64uLb9S7PzJaslxKnMIe4uOvf9e8N0jhWgmL5sX4gV3esv0YW=USD"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=ASRLqkVcGuPjeTBpDM6N6MJufCYhvpj64uLb9S7PzJaslxKnMIe4uOvf9e8N0jhWgmL5sX4gV3esv0YW&currency=USD"></script>
 
 <script>
     paypal.Buttons({
@@ -47,12 +47,9 @@
 
         onApprove: function(data, actions) {
             // El usuario aprobó en PayPal, ahora capturamos la orden
-            return fetch('/Payment/ApproveOrder?token=' + data.orderID, {
-                method: 'GET'
-            })
-                .then(function(res) {
-                    window.location.href = '/Payment/ApproveOrder?token=' + data.orderID;
-                });
+            return actions.order.capture().then(function(details) {
+                window.location.href = '/Payment/ApproveOrder?token=' + data.orderID;
+            });
         },
 
         onError: function(err) {

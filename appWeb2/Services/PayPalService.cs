@@ -93,22 +93,36 @@ namespace appWeb2.Services
         {
             try
             {
+                Console.WriteLine($"=== PayPalService: Iniciando captura de orden {orderId} ===");
+                
                 _accessToken = await GetAccessTokenAsync();
                 var mode = _configuration["PayPal:Mode"];
                 var baseUrl = mode == "sandbox" ? "https://api-m.sandbox.paypal.com" : "https://api-m.paypal.com";
+
+                Console.WriteLine($"PayPalService: Modo = {mode}, BaseUrl = {baseUrl}");
+                Console.WriteLine($"PayPalService: AccessToken obtenido (primeros 10 chars): {_accessToken?.Substring(0, Math.Min(10, _accessToken?.Length ?? 0))}...");
 
                 var request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/v2/checkout/orders/{orderId}/capture");
                 request.Headers.Add("Authorization", $"Bearer {_accessToken}");
                 request.Content = new StringContent("{}", Encoding.UTF8, "application/json");
 
+                Console.WriteLine($"PayPalService: Enviando request a {request.RequestUri}");
+
                 var response = await _httpClient.SendAsync(request);
+                
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"PayPalService: Response Status: {response.StatusCode}");
+                Console.WriteLine($"PayPalService: Response Content: {responseContent}");
+
                 response.EnsureSuccessStatusCode();
 
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonDocument.Parse(content).RootElement;
+                Console.WriteLine($"PayPalService: Captura exitosa para orden {orderId}");
+                return JsonDocument.Parse(responseContent).RootElement;
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"PayPalService: ERROR capturando orden {orderId}: {ex.Message}");
+                Console.WriteLine($"PayPalService: StackTrace: {ex.StackTrace}");
                 throw new Exception($"Error al capturar la orden {orderId}", ex);
             }
         }
