@@ -1,0 +1,131 @@
+@model IEnumerable<appWeb2.Models.VideoJuegos>
+@{
+    ViewData["Title"] = "Juegos Disponibles";
+}
+
+<div class="container mt-5">
+    <div class="row text-center mb-5">
+        <div class="col-md-3 mb-3">
+            <a href="@Url.Action("JuegosVentas", "VideoJuegos")" class="text-decoration-none">
+                <div class="feature-card">
+                    <i class="fas fa-gamepad"></i>
+                    <h5>Todos los Juegos</h5>
+                    <p>Ver catálogo completo</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <a href="@Url.Action("NuevosJuegosUsuario", "VideoJuegos")" class="text-decoration-none">
+                <div class="feature-card">
+                    <i class="fas fa-star"></i>
+                    <h5>Nuevos Juegos</h5>
+                    <p>Lo último en la tienda</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <a href="@Url.Action("CategoriasUsuario", "VideoJuegos")" class="text-decoration-none">
+                <div class="feature-card">
+                    <i class="fas fa-list"></i>
+                    <h5>Categorías</h5>
+                    <p>Explora por tipo de juego</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <a href="@Url.Action("PromocionesUsuario", "VideoJuegos")" class="text-decoration-none">
+                <div class="feature-card">
+                    <i class="fas fa-tags"></i>
+                    <h5>Promociones</h5>
+                    <p>Ofertas especiales</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <h2 class="text-center fw-bold mb-4" style="color: #FFD700;"> Videojuegos Disponibles</h2>
+    <div class="row g-4">
+        @foreach (var juego in Model)
+        {
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="card game-card h-100">
+                    <!-- BADGE SUPERIOR -->
+                    <div class="badge-top">@juego.EdadMinima</div>
+
+                    <!-- IMAGEN -->
+                    <img src="@juego.imagen"
+                         class="card-img-top game-img" />
+
+                    <div class="card-body d-flex flex-column">
+                        <!-- TÍTULO -->
+                        <h5 class="card-title fw-bold">
+                            @juego.titulo
+                        </h5>
+
+                        <!-- PRECIO -->
+                        <h4 class="price mt-2">
+                            $@juego.precio
+                        </h4>
+
+                        <!-- CATEGORÍA -->
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fa-solid fa-gamepad me-2 text-warning"></i>
+                            <span class="text-muted">@juego.Categoria?.categoria</span>
+                        </div>
+
+                        <!-- BOTÓN DE COMPRA -->
+                        <div class="mt-auto">
+                            <a href="@Url.Action("ComprarJuego", "Payment", new { juegoId = juego.Id })" 
+                               class="btn btn-success btn-sm w-100">
+                                <i class="fa-solid fa-shopping-cart me-2"></i>Comprar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- PAGINADOR -->
+    @if (ViewBag.TotalPaginas > 1)
+    {
+        <nav aria-label="Navegación de páginas" class="mt-4">
+            <ul class="pagination justify-content-center">
+                @if (ViewBag.PaginaActual > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("JuegosVentas", new { pagina = ViewBag.PaginaActual - 1 })">
+                            <i class="fas fa-chevron-left"></i> Anterior
+                        </a>
+                    </li>
+                }
+
+                @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
+                {
+                    <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("JuegosVentas", new { pagina = i })">@i</a>
+                    </li>
+                }
+
+                @if (ViewBag.PaginaActual < ViewBag.TotalPaginas)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("JuegosVentas", new { pagina = ViewBag.PaginaActual + 1 })">
+                            Siguiente <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+        
+        <div class="text-center mt-2">
+            <small class="text-muted">
+                Página @ViewBag.PaginaActual de @ViewBag.TotalPaginas | 
+                Mostrando @(Model.Count()) juegos de @(ViewBag.TotalPaginas * 10) totales
+            </small>
+        </div>
+    }
+</div>

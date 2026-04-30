@@ -930,3 +930,6 @@ C:\Users\renes\source\repos\AppVideoJuegos\appWeb2\obj\Debug\net10.0\staticwebas
 C:\Users\renes\source\repos\AppVideoJuegos\appWeb2\obj\Debug\net10.0\appWeb2.csproj.Up2Date
 C:\Users\renes\source\repos\AppVideoJuegos\appWeb2\obj\Debug\net10.0\appWeb2.genruntimeconfig.cache
 C:\Users\renes\source\repos\AppVideoJuegos\appWeb2\obj\Debug\net10.0\ref\appWeb2.dll
+C:\Users\renes\source\repos\AppVideoJuegos\appWeb2\bin\Debug\net10.0\Rotativa.AspNetCore.dll
+C:\Users\renes\source\repos\AppVideoJuegos\appWeb2\obj\Debug\net10.0\appWeb2.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\renes\source\repos\AppVideoJuegos\appWeb2\obj\Debug\net10.0\compressed\ux90q8nbry-{0}-l3huclic3m-l3huclic3m.gz

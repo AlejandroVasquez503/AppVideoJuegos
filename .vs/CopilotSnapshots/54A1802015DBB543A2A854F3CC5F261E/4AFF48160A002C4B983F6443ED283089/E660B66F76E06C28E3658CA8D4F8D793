@@ -1,0 +1,35 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+
+namespace appWeb2.Filtros
+{
+    public class AuthorizeRoleAttribute : ActionFilterAttribute
+    {
+        private readonly string[] _requiredRoles;
+
+        public AuthorizeRoleAttribute(params string[] roles)
+        {
+            _requiredRoles = roles;
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            var usuario = context.HttpContext.Session.GetString("usuario");
+            var rolUsuario = context.HttpContext.Session.GetString("rol");
+
+            // Si el usuario no está autenticado, redirigir al login
+            if (usuario == null)
+            {
+                context.Result = new RedirectToActionResult("Login", "Account", null);
+                return;
+            }
+
+            // Si se especificó un rol requerido y el usuario no lo tiene, redirigir a acceso denegado
+            if (_requiredRoles.Length > 0 && (rolUsuario == null || !_requiredRoles.Any(r => r.Equals(rolUsuario, StringComparison.OrdinalIgnoreCase))))
+            {
+                context.Result = new RedirectToActionResult("AccessDenied", "Account", null);
+                return;
+            }
+        }
+    }
+}

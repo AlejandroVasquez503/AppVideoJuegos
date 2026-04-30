@@ -3,8 +3,13 @@ using appWeb2.Filtros;
 using appWeb2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Rotativa.AspNetCore;
+using appWeb2.Helpers;
 using System.Security.Cryptography;
 using System.Text;
+using System.Linq;
+using Microsoft.AspNetCore.Session;
 
 namespace appWeb2.Controllers
     {
@@ -22,7 +27,74 @@ namespace appWeb2.Controllers
                     return RedirectToAction("Login");
                 }
 
-            [SessionAuthorize]
+            private string HashPassword(string password, string salt)
+            {
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    byte[] saltedPassword = Encoding.Unicode.GetBytes(salt + password);
+                    byte[] hashBytes = sha256.ComputeHash(saltedPassword);
+                    return Convert.ToBase64String(hashBytes);
+                }
+            }
+
+            // GET: Account/Register
+            public IActionResult Register()
+            {
+                return View();
+            }
+
+            // POST: Account/Register
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> Register(RegisterViewModel model)
+            {
+                if (ModelState.IsValid)
+                {
+                    // Verificar si el correo ya existe
+                    var existingUser = await _context.Usuarios
+                        .FirstOrDefaultAsync(u => u.correo == model.correo);
+                    
+                    if (existingUser != null)
+                    {
+                        ModelState.AddModelError("correo", "Este correo electrónico ya está registrado.");
+                        return View(model);
+                    }
+
+                    // Generar salt y hash para la contraseña
+                    string salt = Guid.NewGuid().ToString();
+                    
+                    // Generar hash directamente como bytes
+                    string saltedPassword = salt + model.PasswordInput;
+                    byte[] passwordBytes;
+                    
+                    using (SHA256 sha256 = SHA256.Create())
+                    {
+                        byte[] saltedPasswordBytes = Encoding.Unicode.GetBytes(saltedPassword);
+                        passwordBytes = sha256.ComputeHash(saltedPasswordBytes);
+                    }
+                    
+                    // Crear nuevo usuario con los datos del ViewModel
+                    var usuario = new Usuario
+                    {
+                        nombre = model.nombre,
+                        correo = model.correo,
+                        salt = salt,
+                        password = passwordBytes,
+                        FechaRegistro = DateTime.Now,
+                        idRol = model.idRol ?? 2 // Usar rol seleccionado o por defecto Usuario
+                    };
+
+                    _context.Add(usuario);
+                    await _context.SaveChangesAsync();
+
+                    TempData["Success"] = "¡Cuenta creada exitosamente! Por favor inicia sesión.";
+                    return RedirectToAction("Login");
+                }
+                
+                return View(model);
+            }
+
+            [AuthorizeRole("Admin")]
             public IActionResult Dashboard()
                 {
                     var categorias = _context.Categorias.ToList();
@@ -135,13 +207,14 @@ namespace appWeb2.Controllers
                 }
 
 
-            public async Task<IActionResult> DetalleVentas(DateTime? desde, DateTime? hasta, int pagina=1)
+            public async Task<IActionResult> DetalleVentas(DateTime? desde, DateTime? hasta, int? clienteId, int? videojuegoId, int pagina=1)
             {
                 int paginador = 10;
 
                 var query = _context.detalle_compra
                         .Include(d => d.Compra)
                         .Include(d => d.VideoJuegos)
+                        .Include(d => d.Compra.Usuario)
                         .AsQueryable();
             
                 if(desde.HasValue)
@@ -152,6 +225,16 @@ namespace appWeb2.Controllers
                 if(hasta.HasValue)
                 {
                     query = query.Where(x => x.fechaHoraTransaccion <= hasta);
+                }
+
+                if(clienteId.HasValue && clienteId > 0)
+                {
+                    query = query.Where(x => x.Compra.UsuarioId == clienteId.Value);
+                }
+
+                if(videojuegoId.HasValue && videojuegoId > 0)
+                {
+                    query = query.Where(x => x.VideoJuegosId == videojuegoId.Value);
                 }
 
                 var datos = await query
@@ -166,7 +249,9 @@ namespace appWeb2.Controllers
                         total = x.total,
                         estadoCompra = x.estadoCompra,
                         fechaHoraTransaccion = x.fechaHoraTransaccion,
-                        codigoTransaccion = x.codigoTransaccion
+                        codigoTransaccion = x.codigoTransaccion,
+                        NombreUsuario = x.Compra.Usuario.nombre,
+                        NombreVideojuego = x.VideoJuegos.titulo
                     })
                     .ToListAsync(); 
 
@@ -174,38 +259,151 @@ namespace appWeb2.Controllers
                     ViewBag.PaginaActual = pagina;
                     ViewBag.Desde = desde;
                     ViewBag.Hasta = hasta;
+                    ViewBag.ClienteId = clienteId;
+                    ViewBag.VideojuegoId = videojuegoId;
+
+                // Cargar datos para los select de filtros
+                ViewBag.Clientes = await _context.Usuarios
+                    .OrderBy(u => u.nombre)
+                    .Select(u => new { u.Id, u.nombre })
+                    .ToListAsync();
+
+                ViewBag.Videojuegos = await _context.VideoJuegos
+                    .OrderBy(v => v.titulo)
+                    .Select(v => new { v.Id, v.titulo })
+                    .ToListAsync();
 
                 return View(datos);
             }
 
 
+        public async Task<IActionResult> MisJuegos(DateTime? desde, DateTime? hasta, string nombreJuego)
+        {
+            var usuarioIdStr = HttpContext.Session.GetString("UsuarioId");
+            
+            if (string.IsNullOrEmpty(usuarioIdStr) || !int.TryParse(usuarioIdStr, out int usuarioId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var query = _context.detalle_compra
+                .Include(d => d.VideoJuegos)
+                .ThenInclude(v => v.Categoria)
+                .Where(d => d.Compra.UsuarioId == usuarioId)
+                .Select(d => d.VideoJuegos)
+                .Distinct()
+                .AsQueryable();
+
+            // Filtro por nombre de videojuego
+            if (!string.IsNullOrEmpty(nombreJuego))
+            {
+                query = query.Where(v => v.titulo.Contains(nombreJuego));
+            }
+
+            // Filtro por fecha de compra (desde)
+            if (desde.HasValue)
+            {
+                query = query.Where(v => _context.detalle_compra
+                    .Any(d => d.VideoJuegosId == v.Id && 
+                              d.Compra.UsuarioId == usuarioId && 
+                              d.fechaHoraTransaccion >= desde.Value));
+            }
+
+            // Filtro por fecha de compra (hasta)
+            if (hasta.HasValue)
+            {
+                query = query.Where(v => _context.detalle_compra
+                    .Any(d => d.VideoJuegosId == v.Id && 
+                              d.Compra.UsuarioId == usuarioId && 
+                              d.fechaHoraTransaccion <= hasta.Value));
+            }
+
+            var juegosComprados = await query.ToListAsync();
+
+            ViewBag.Desde = desde;
+            ViewBag.Hasta = hasta;
+            ViewBag.NombreJuego = nombreJuego;
+
+            return View(juegosComprados);
+        }
+
+        public async Task<IActionResult> ExportarMisJuegosPDF()
+        {
+            var usuarioIdStr = HttpContext.Session.GetString("UsuarioId");
+            
+            if (string.IsNullOrEmpty(usuarioIdStr) || !int.TryParse(usuarioIdStr, out int usuarioId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            // Obtener los videojuegos comprados por el usuario
+            var juegosComprados = await _context.detalle_compra
+                .Include(d => d.VideoJuegos)
+                .ThenInclude(v => v.Categoria)
+                .Where(d => d.Compra.UsuarioId == usuarioId)
+                .Select(d => d.VideoJuegos)
+                .Distinct()
+                .ToListAsync();
+
+            ViewBag.NombreUsuario = HttpContext.Session.GetString("usuario");
+            
+            return new ViewAsPdf("PdfMisJuegos", juegosComprados)
+            {
+                FileName = PdfHelper.GenerarNombrePdfUnico("MisVideojuegos", HttpContext.Session.GetString("usuario") ?? "Usuario"),
+            };
+        }
+
+        public async Task<IActionResult> ExportarPDF(DateTime? desde, DateTime? hasta)
+        {
+            var query = _context.detalle_compra
+                    .Include(d => d.Compra)
+                    .Include(c => c.VideoJuegos)
+                    .Include(d => d.Compra.Usuario)
+                    .AsQueryable();
+
+                if(desde.HasValue)
+                {
+                    query = query.Where(d => d.fechaHoraTransaccion >= desde);
+                }
+
+                if(hasta.HasValue)
+                {
+                    query = query.Where(d => d.fechaHoraTransaccion <= hasta);
+                }
+                var datos = await query
+                    .OrderByDescending(d => d.fechaHoraTransaccion)
+                    .Select(d => new VentaViewModel
+                    {
+                        idCompra = d.idCompra,
+                        VideoJuegosId = d.VideoJuegosId,
+                        cantidad = d.cantidad,
+                        total = d.total,
+                        estadoCompra = d.estadoCompra,
+                        fechaHoraTransaccion = d.fechaHoraTransaccion,
+                        codigoTransaccion = d.codigoTransaccion,
+                        NombreUsuario = d.Compra.Usuario.nombre,
+                        NombreVideojuego = d.VideoJuegos.titulo
+                    }).ToListAsync(); 
+
+                return new ViewAsPdf("PdfVentas", datos)
+                {
+                    FileName = PdfHelper.GenerarNombrePdfUnico("Ventas", "Reporte"),
+                };
+        }
 
 
 
-
-        [HttpPost]
+            [HttpPost]
             [ValidateAntiForgeryToken]
             public IActionResult Login(Login model)
             {
-                //var user = _context.Usuarios
-                //    .FirstOrDefault(u => u.correo == model.correo && u.password == model.password);
-
-                //if (user != null)
-                //{
-                //    HttpContext.Session.SetString("usuario", user.nombre);
-                //    Console.WriteLine("Usuario logueado: " + user.nombre);
-                //    return RedirectToAction("Index", "Home");
-                //}
-
-                //ViewBag.Error = "Credenciales incorrectos";
-                //return View("Index");
-
                 var user = _context.Usuarios
+                    .Include(u => u.Rol)
                     .FirstOrDefault(u => u.correo == model.correo);
 
                 if (user != null)
                 {
-                    string saltedPassword = model.password + user.salt;
+                    string saltedPassword = user.salt + model.password;
 
                     using (SHA256 sha256 = SHA256.Create())
                     {
@@ -216,12 +414,46 @@ namespace appWeb2.Controllers
                         Console.WriteLine("Concatenado: " + saltedPassword);
 
                         Console.WriteLine("Hash generado: " + Convert.ToBase64String(hashBytes));
-                        Console.WriteLine("Hash DB: " + user.password);
+                        Console.WriteLine("Hash DB: " + Convert.ToBase64String(user.password));
+                        Console.WriteLine("Hash DB Length: " + user.password.Length);
+                        Console.WriteLine("Hash Generated Length: " + hashBytes.Length);
 
-                        if (hashBytes.SequenceEqual(user.password))
+                        // Intentar comparar directamente (nuevo formato)
+                        bool passwordMatch = hashBytes.SequenceEqual(user.password);
+                        
+                        // Si no coincide, intentar con formato antiguo (Base64)
+                        if (!passwordMatch && user.password != null)
+                        {
+                            try
+                            {
+                                string storedPasswordBase64 = Convert.ToBase64String(user.password);
+                                byte[] storedHashBytes = Convert.FromBase64String(storedPasswordBase64);
+                                passwordMatch = hashBytes.SequenceEqual(storedHashBytes);
+                            }
+                            catch
+                            {
+                                // Si falla la conversión, continuar con false
+                            }
+                        }
+                        
+                        if (passwordMatch)
                         {
                             HttpContext.Session.SetString("usuario", user.nombre);
-                            return RedirectToAction("Dashboard", "Account");
+                            HttpContext.Session.SetString("UsuarioId", user.Id.ToString());
+
+                            if (user.Rol != null)
+                            {
+                                HttpContext.Session.SetString("rol", user.Rol.rol);
+                            }
+
+                            if (user.Rol != null && user.Rol.rol == "Admin")
+                            {
+                                return RedirectToAction("Dashboard", "Account");
+                            }
+                            else
+                            {
+                                return RedirectToAction("JuegosVentas", "VideoJuegos");
+                            }
                         }
                     }
 
@@ -236,6 +468,12 @@ namespace appWeb2.Controllers
                 HttpContext.Session.Clear();
                 return RedirectToAction("Login");
             }
+
+            public IActionResult AccessDenied()
+            {
+                return View();
+            }
+
         }
 }
     

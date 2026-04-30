@@ -1,4 +1,7 @@
 ﻿@model appWeb2.Models.VideoJuegos
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
 
 <h2>Editar Videojuego</h2>
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
@@ -52,5 +55,8 @@
         </label>
     </div>
 
-    <button type="submit" class="btn btn-warning">Actualizar</button>
+    <button type="submit" class="btn btn-warning me-2">Actualizar</button>
+    <a href="@Url.Action("Index", "VideoJuegos")" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left me-2"></i>Regresar a Videojuegos
+    </a>
 </form>

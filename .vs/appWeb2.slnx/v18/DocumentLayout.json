@@ -3,55 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|c:\\users\\renes\\source\\repos\\appvideojuegos\\appweb2\\migrations\\20260423043112_initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|solutionrelative:appweb2\\migrations\\20260423043112_initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|c:\\users\\renes\\source\\repos\\appvideojuegos\\appweb2\\controllers\\paymentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|solutionrelative:appweb2\\controllers\\paymentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|c:\\users\\renes\\source\\repos\\appvideojuegos\\appweb2\\controllers\\videojuegoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|solutionrelative:appweb2\\controllers\\videojuegoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|c:\\users\\renes\\source\\repos\\appvideojuegos\\appweb2\\views\\payment\\checkout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|solutionrelative:appweb2\\views\\payment\\checkout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|c:\\users\\renes\\source\\repos\\appvideojuegos\\appweb2\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|solutionrelative:appweb2\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|c:\\users\\renes\\source\\repos\\appvideojuegos\\appweb2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|solutionrelative:appweb2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|c:\\users\\renes\\source\\repos\\appvideojuegos\\appweb2\\services\\paypalservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|solutionrelative:appweb2\\services\\paypalservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|c:\\users\\renes\\source\\repos\\appvideojuegos\\appweb2\\appweb2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|solutionrelative:appweb2\\appweb2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|c:\\users\\renes\\source\\repos\\appvideojuegos\\appweb2\\views\\payment\\paymentsuccess.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|solutionrelative:appweb2\\views\\payment\\paymentsuccess.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|c:\\users\\renes\\source\\repos\\appvideojuegos\\appweb2\\views\\payment\\paymentfailed.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|solutionrelative:appweb2\\views\\payment\\paymentfailed.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|c:\\users\\renes\\source\\repos\\appvideojuegos\\appweb2\\models\\ventaviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|solutionrelative:appweb2\\models\\ventaviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|c:\\users\\renes\\source\\repos\\appvideojuegos\\appweb2\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|solutionrelative:appweb2\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\renea\\Desktop\\AppVideojuegos-main\\appWeb2\\Migrations\\20260421161939_Initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|c:\\users\\renes\\source\\repos\\appvideojuegos\\appweb2\\controllers\\videojuegoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5E9C489E-056B-F73E-D0BD-58AEDB7DE61E}|appWeb2\\appWeb2.csproj|solutionrelative:appweb2\\controllers\\videojuegoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -61,15 +18,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
             },
             {
               "$type": "Bookmark",
@@ -82,158 +35,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "20260423043112_Initial.cs",
-              "DocumentMoniker": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Migrations\\20260423043112_Initial.cs",
-              "RelativeDocumentMoniker": "appWeb2\\Migrations\\20260423043112_Initial.cs",
-              "ToolTip": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Migrations\\20260423043112_Initial.cs",
-              "RelativeToolTip": "appWeb2\\Migrations\\20260423043112_Initial.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABAAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-23T04:31:12.439Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "VideoJuegosController.cs",
-              "DocumentMoniker": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Controllers\\VideoJuegosController.cs",
-              "RelativeDocumentMoniker": "appWeb2\\Controllers\\VideoJuegosController.cs",
-              "ToolTip": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Controllers\\VideoJuegosController.cs",
-              "RelativeToolTip": "appWeb2\\Controllers\\VideoJuegosController.cs",
-              "ViewState": "AgIAAMEAAAAAAAAAAAAnwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-23T04:17:38.013Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Checkout.cshtml",
-              "DocumentMoniker": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Views\\Payment\\Checkout.cshtml",
-              "RelativeDocumentMoniker": "appWeb2\\Views\\Payment\\Checkout.cshtml",
-              "ToolTip": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Views\\Payment\\Checkout.cshtml",
-              "RelativeToolTip": "appWeb2\\Views\\Payment\\Checkout.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-23T03:38:22.961Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Program.cs",
               "RelativeDocumentMoniker": "appWeb2\\Program.cs",
               "ToolTip": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Program.cs",
               "RelativeToolTip": "appWeb2\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-23T03:37:41.124Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\appsettings.json",
-              "RelativeDocumentMoniker": "appWeb2\\appsettings.json",
-              "ToolTip": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\appsettings.json",
-              "RelativeToolTip": "appWeb2\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-04-23T03:37:25.456Z"
+              "WhenOpened": "2026-04-29T17:04:02.322Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "PaymentController.cs",
-              "DocumentMoniker": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Controllers\\PaymentController.cs",
-              "RelativeDocumentMoniker": "appWeb2\\Controllers\\PaymentController.cs",
-              "ToolTip": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Controllers\\PaymentController.cs",
-              "RelativeToolTip": "appWeb2\\Controllers\\PaymentController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAvAAAAAAAAAA==",
+              "Title": "VideoJuegosController.cs",
+              "DocumentMoniker": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Controllers\\VideoJuegosController.cs",
+              "RelativeDocumentMoniker": "appWeb2\\Controllers\\VideoJuegosController.cs",
+              "ToolTip": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Controllers\\VideoJuegosController.cs",
+              "RelativeToolTip": "appWeb2\\Controllers\\VideoJuegosController.cs",
+              "ViewState": "AgIAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-23T03:44:32.842Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "appWeb2.csproj",
-              "DocumentMoniker": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\appWeb2.csproj",
-              "RelativeDocumentMoniker": "appWeb2\\appWeb2.csproj",
-              "ToolTip": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\appWeb2.csproj",
-              "RelativeToolTip": "appWeb2\\appWeb2.csproj",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAcwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-04-23T04:02:01.385Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "PayPalService.cs",
-              "DocumentMoniker": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Services\\PayPalService.cs",
-              "RelativeDocumentMoniker": "appWeb2\\Services\\PayPalService.cs",
-              "ToolTip": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Services\\PayPalService.cs",
-              "RelativeToolTip": "appWeb2\\Services\\PayPalService.cs",
-              "ViewState": "AgIAAFsAAAAAAAAAAAA5wAwAAAA3AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-23T03:37:37.55Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "PaymentSuccess.cshtml",
-              "DocumentMoniker": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Views\\Payment\\PaymentSuccess.cshtml",
-              "RelativeDocumentMoniker": "appWeb2\\Views\\Payment\\PaymentSuccess.cshtml",
-              "ToolTip": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Views\\Payment\\PaymentSuccess.cshtml",
-              "RelativeToolTip": "appWeb2\\Views\\Payment\\PaymentSuccess.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-23T03:37:59.936Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "PaymentFailed.cshtml",
-              "DocumentMoniker": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Views\\Payment\\PaymentFailed.cshtml",
-              "RelativeDocumentMoniker": "appWeb2\\Views\\Payment\\PaymentFailed.cshtml",
-              "ToolTip": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Views\\Payment\\PaymentFailed.cshtml",
-              "RelativeToolTip": "appWeb2\\Views\\Payment\\PaymentFailed.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-23T03:38:10.129Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "VentaViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Models\\VentaViewModel.cs",
-              "RelativeDocumentMoniker": "appWeb2\\Models\\VentaViewModel.cs",
-              "ToolTip": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Models\\VentaViewModel.cs",
-              "RelativeToolTip": "appWeb2\\Models\\VentaViewModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-21T17:00:24.329Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "AccountController.cs",
-              "DocumentMoniker": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Controllers\\AccountController.cs",
-              "RelativeDocumentMoniker": "appWeb2\\Controllers\\AccountController.cs",
-              "ToolTip": "C:\\Users\\renes\\source\\repos\\AppVideoJuegos\\appWeb2\\Controllers\\AccountController.cs",
-              "RelativeToolTip": "appWeb2\\Controllers\\AccountController.cs",
-              "ViewState": "AgIAAJEAAAAAAAAAAAAYwKMAAAA4AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-21T17:00:53.897Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "20260421161939_Initial.cs",
-              "DocumentMoniker": "C:\\Users\\renea\\Desktop\\AppVideojuegos-main\\appWeb2\\Migrations\\20260421161939_Initial.cs",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\renea\\Desktop\\AppVideojuegos-main\\appWeb2\\Migrations\\20260421161939_Initial.cs",
-              "ToolTip": "C:\\Users\\renea\\Desktop\\AppVideojuegos-main\\appWeb2\\Migrations\\20260421161939_Initial.cs",
-              "RelativeToolTip": "..\\..\\..\\..\\renea\\Desktop\\AppVideojuegos-main\\appWeb2\\Migrations\\20260421161939_Initial.cs",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-21T16:19:39.561Z"
+              "WhenOpened": "2026-04-23T04:17:38.013Z"
             }
           ]
         }

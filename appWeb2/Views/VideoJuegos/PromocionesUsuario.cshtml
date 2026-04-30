@@ -1,0 +1,90 @@
+@model List<appWeb2.Models.VideoJuegos>
+
+@{
+    ViewData["Title"] = "Promociones";
+}
+
+<h2>Juegos en Promoción</h2>
+
+<div class="alert alert-info">
+    <i class="fas fa-tags me-2"></i>
+    <strong>¡Ofertas especiales!</strong> Aprovecha estos juegos con descuentos exclusivos.
+</div>
+
+<div class="row">
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var juego in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card game-card h-100">
+                    <!-- BADGE SUPERIOR -->
+                    <div class="badge-top">@juego.EdadMinima</div>
+
+                    <!-- BADGE DE PROMOCIÓN -->
+                    <div class="badge-promo">
+                        <i class="fas fa-percentage"></i> PROMO
+                    </div>
+
+                    <!-- IMAGEN -->
+                    @if (!string.IsNullOrEmpty(juego.imagen))
+                    {
+                        <img src="@juego.imagen" class="card-img-top game-img" alt="@juego.titulo">
+                    }
+                    else
+                    {
+                        <div class="card-img-top d-flex align-items-center justify-content-center bg-light game-img">
+                            <span class="text-muted">Sin imagen</span>
+                        </div>
+                    }
+
+                    <div class="card-body d-flex flex-column">
+                        <!-- TÍTULO -->
+                        <h5 class="card-title fw-bold">@juego.titulo</h5>
+
+                        <!-- PRECIO -->
+                        <h4 class="price mt-2">
+                            $@juego.precio
+                            <span class="badge bg-success ms-2">En Promoción</span>
+                        </h4>
+
+                        <!-- CATEGORÍA -->
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fa-solid fa-gamepad me-2 text-warning"></i>
+                            <span class="text-muted">@juego.Categoria?.categoria</span>
+                        </div>
+
+                        <!-- INFORMACIÓN ADICIONAL -->
+                        <p class="card-text">
+                            <small class="text-muted">Agregado el: @juego.FechaCreacion.ToString("dd/MM/yyyy")</small><br>
+                            <strong>Edad Mínima:</strong> <span class="badge bg-info">@juego.EdadMinima</span>
+                        </p>
+
+                        <!-- BOTÓN DE COMPRA -->
+                        <div class="mt-auto">
+                            <a href="@Url.Action("ComprarJuego", "Payment", new { juegoId = juego.Id })" 
+                               class="btn btn-success btn-sm w-100">
+                                <i class="fa-solid fa-shopping-cart me-2"></i>Comprar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                No hay juegos en promoción en este momento. ¡Vuelve pronto para ver nuevas ofertas!
+            </div>
+        </div>
+    }
+</div>
+
+<div class="mt-4">
+    <a href="@Url.Action("JuegosVentas", "VideoJuegos")" class="btn btn-primary">
+        <i class="fa-solid fa-arrow-left me-2"></i>Volver al Inicio
+    </a>
+</div>

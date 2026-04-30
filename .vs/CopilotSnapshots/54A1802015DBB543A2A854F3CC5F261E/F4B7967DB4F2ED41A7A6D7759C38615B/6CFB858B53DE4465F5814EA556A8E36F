@@ -1,0 +1,5 @@
+﻿@{
+    ViewData["Title"] = "Bienvenidos";
+}
+
+<h1>Bievenidos</h1>

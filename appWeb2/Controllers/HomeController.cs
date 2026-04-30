@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using appWeb2.Data;
+using appWeb2.Filtros;
 using appWeb2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,12 @@ namespace appWeb2.Controllers
         }
 
         public IActionResult Contacts()
+        {
+            return View();
+        }
+
+        [SessionAuthorize]
+        public IActionResult JuegosVentas()
         {
             return View();
         }

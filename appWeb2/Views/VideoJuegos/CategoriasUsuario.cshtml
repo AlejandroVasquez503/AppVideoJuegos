@@ -1,0 +1,45 @@
+@model List<appWeb2.Models.Categoria>
+
+@{
+    ViewData["Title"] = "Categorías";
+}
+
+<h2>Categorías de Juegos</h2>
+
+<div class="row">
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var categoria in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-gamepad fa-3x mb-3 text-primary"></i>
+                        <h5 class="card-title">@categoria.categoria</h5>
+                        <p class="card-text">
+                            Explora todos los juegos disponibles en la categoría @categoria.categoria
+                        </p>
+                        <a href="@Url.Action("JuegosPorCategoriaUsuario", "VideoJuegos", new { idcategoria = categoria.idcategoria })" 
+                           class="btn btn-primary">
+                            <i class="fas fa-eye me-2"></i>Ver Juegos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-info">
+                No hay categorías disponibles en este momento.
+            </div>
+        </div>
+    }
+</div>
+
+<div class="mt-4">
+    <a href="@Url.Action("JuegosVentas", "VideoJuegos")" class="btn btn-primary">
+        <i class="fa-solid fa-arrow-left me-2"></i>Volver al Inicio
+    </a>
+</div>

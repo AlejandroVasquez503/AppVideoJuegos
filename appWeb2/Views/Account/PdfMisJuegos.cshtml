@@ -1,0 +1,154 @@
+@model IEnumerable<appWeb2.Models.VideoJuegos>
+@{
+    Layout = null;
+    ViewData["Title"] = "Mis Videojuegos Comprados";
+    string nombreUsuario = ViewBag.NombreUsuario ?? "Cliente";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #007bff;
+            margin: 0;
+        }
+        .header p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .info-cliente {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 3px;
+        }
+        .badge-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .badge-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="~/imagenes/LogonSinFondo.png" alt="GameStore Logo" style="height: 80px;" />
+        </div>
+        <h1>GameStore - Mis Videojuegos Comprados</h1>
+        <p>Fecha de generación: @DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")</p>
+        <p>Generado para: @nombreUsuario</p>
+    </div>
+
+    <div class="info-cliente">
+        <h3>Información del Cliente</h3>
+        <p>
+            <strong>Cliente:</strong> @nombreUsuario<br>
+            <strong>Total de videojuegos:</strong> @Model.Count()<br>
+            <strong>Total invertido:</strong> $@Model.Sum(v => v.precio).ToString("F2")
+        </p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Edad Mínima</th>
+                <th>Promoción</th>
+                <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var juego in Model)
+            {
+                <tr>
+                    <td><strong>@juego.titulo</strong></td>
+                    <td>@juego.Categoria?.categoria</td>
+                    <td>$@juego.precio.ToString("F2")</td>
+                    <td><span class="badge badge-info">@juego.EdadMinima</span></td>
+                    <td>
+                        @if (juego.EnPromocion)
+                        {
+                            <span class="badge badge-success">Sí</span>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </td>
+                    <td>@(juego.descripcion?.Length > 100 ? juego.descripcion.Substring(0, 100) + "..." : juego.descripcion ?? "-")</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="2"><strong>TOTAL GENERAL:</strong></td>
+                <td><strong>$@Model.Sum(v => v.precio).ToString("F2")</strong></td>
+                <td><strong>@Model.Count() juegos</strong></td>
+                <td><strong>@Model.Count(v => v.EnPromocion) en promoción</strong></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="footer">
+        <p>GameStore © 2026 - Sistema de Gestión de Videojuegos</p>
+        <p>Este documento es un reporte personal de videojuegos comprados</p>
+        <p>Página 1 de 1</p>
+    </div>
+</body>
+</html>

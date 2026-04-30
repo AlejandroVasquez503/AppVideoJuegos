@@ -1,15 +1,48 @@
 ﻿@model appWeb2.Models.VideoJuegos
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
 
-<h2>Eliminar Videojuego</h2>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-danger mb-4 text-center">Eliminar Videojuego</h2>
 
-<h4>Estás seguro que deseas eliminar esto?</h4>
+            <div class="alert alert-warning">
+                <h4 class="alert-heading">¿Estás seguro que deseas eliminar esto?</h4>
+                <p class="mb-0">Esta acción no se puede deshacer.</p>
+            </div>
 
-<div>
-    <strong>@Model.titulo</strong> - $@Model.precio
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.titulo</h5>
+                    <p class="card-text">
+                        <strong>Precio:</strong> $@Model.precio.ToString("F2")
+                    </p>
+                    @if (!string.IsNullOrEmpty(Model.descripcion))
+                    {
+                        <p class="card-text">
+                            <strong>Descripción:</strong> @Model.descripcion
+                        </p>
+                    }
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <strong>Categoría:</strong> @Model.Categoria?.categoria<br>
+                            <strong>Edad Mínima:</strong> @Model.EdadMinima
+                        </small>
+                    </p>
+                </div>
+            </div>
+
+            <form asp-action="Delete" class="mt-4 text-center">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger me-2">
+                    <i class="fas fa-trash me-2"></i>Eliminar
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Cancelar
+                </a>
+            </form>
+        </div>
+    </div>
 </div>
-
-<form asp-action="Delete">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Eliminar</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-</form>

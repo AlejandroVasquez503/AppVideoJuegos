@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - GameStore</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="bg-dark-custom">
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-custom shadow">
+            <div class="container">
+
+                <a class="navbar-brand fw-bold text-warning" asp-controller="Home" asp-action="Index">
+                    GameStore
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="menuNavbar">
+
+                    <ul class="navbar-nav me-auto">
+                        @{
+                            var usuario = Context.Session.GetString("usuario");
+                            var rol = Context.Session.GetString("rol");
+                            
+                            if (!string.IsNullOrEmpty(usuario))
+                            {
+                                if (rol == "Admin")
+                                {
+                                    // Admin logueado - mostrar opciones de admin
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Account" asp-action="Dashboard">Dashboard</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="VideoJuegos" asp-action="Create">Añadir Videojuego</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    // Usuario normal logueado - mostrar opciones específicas
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="VideoJuegos" asp-action="JuegosVentas">Inicio</a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="VideoJuegos" asp-action="NuevosJuegosUsuario">Lo Nuevo</a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="VideoJuegos" asp-action="CategoriasUsuario">Categorías</a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="VideoJuegos" asp-action="PromocionesUsuario">Promociones</a>
+                                    </li>
+
+                                }
+                            }
+                            else
+                            {
+                                // Usuario no logueado - mostrar opciones generales
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="Contacts">Contactos</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="VideoJuegos" asp-action="Index">Lo Nuevo</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav ms-auto">
+                        @if (!string.IsNullOrEmpty(usuario))
+                        {
+                                // Usuario logueado
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-solid fa-user me-2"></i>@usuario
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Account" asp-action="Logout">
+                                                <i class="fa-solid fa-sign-out-alt me-2"></i>Cerrar Sesión
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                // Usuario no logueado
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Account" asp-action="Login">
+                                        Iniciar Sesión
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="btn btn-accent ms-2"
+                                           asp-controller="Account" asp-action="Register">
+                                        Registrarse
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container mt-5">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    
+    <footer class="footer-custom text-center py-3 mt-5">
+        <div class="container">
+            &copy; 2026 - GameStore | Todos los derechos reservados
+        </div>
+    </footer>
+
+   
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

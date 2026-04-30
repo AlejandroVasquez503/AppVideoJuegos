@@ -1,6 +1,6 @@
-@model List<appWeb2.Models.VideoJuegos>
-
+@model IEnumerable<appWeb2.Models.VideoJuegos>
 @{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     ViewData["Title"] = "Nuevos Juegos";
 }
 
@@ -38,6 +38,20 @@
                             <strong>Edad Mínima:</strong> <span class="badge bg-info">@juego.EdadMinima</span>
                         </p>
                         <p class="card-text">@juego.descripcion</p>
+                        
+                        <!-- BOTONES CRUD -->
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between">
+                                <a href="@Url.Action("Edit", "VideoJuegos", new { id = juego.Id })" 
+                                   class="btn btn-primary btn-sm">
+                                    <i class="fa-solid fa-edit me-2"></i>Editar
+                                </a>
+                                <a href="@Url.Action("Delete", "VideoJuegos", new { id = juego.Id })" 
+                                   class="btn btn-danger btn-sm">
+                                    <i class="fa-solid fa-trash me-2"></i>Eliminar
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -53,6 +67,8 @@
     }
 </div>
 
-<div>
-    <a href="@Url.Action("Index", "VideoJuegos")" class="btn btn-primary">Ver Catálogo Completo</a>
+<div class="mt-4">
+    <a href="@Url.Action("Index", "VideoJuegos")" class="btn btn-primary">
+        <i class="fa-solid fa-arrow-left me-2"></i>Ver Catálogo Completo
+    </a>
 </div>

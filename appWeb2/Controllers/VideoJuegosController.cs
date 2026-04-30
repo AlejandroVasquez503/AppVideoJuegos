@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace appWeb2.Controllers
 {
-    [SessionAuthorize]
     public class VideoJuegosController : Controller
     {
         private readonly AppDbContext _context;
@@ -17,12 +16,14 @@ namespace appWeb2.Controllers
             _context = context;
         }
 
+        [AuthorizeRole("Admin")]
         public async Task<IActionResult> Index()
         {
             var juegos = await _context.VideoJuegos.ToListAsync();
             return View(juegos);
         }
 
+        [AuthorizeRole("Admin")]
         public async Task<IActionResult> Create()
         {
             var categorias = await _context.Categorias.ToListAsync();
@@ -30,6 +31,7 @@ namespace appWeb2.Controllers
             return View();
         }
 
+        [AuthorizeRole("Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(VideoJuegos juego, IFormFile archivoImagen)
@@ -60,6 +62,7 @@ namespace appWeb2.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [AuthorizeRole("Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -73,6 +76,7 @@ namespace appWeb2.Controllers
             return View(juego);
         }
 
+        [AuthorizeRole("Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, VideoJuegos juego, IFormFile? archivoImagen)
@@ -125,6 +129,7 @@ namespace appWeb2.Controllers
             return View(juego);
         }
 
+        [AuthorizeRole("Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -137,6 +142,7 @@ namespace appWeb2.Controllers
             return View(juego);
         }
 
+        [AuthorizeRole("Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -187,6 +193,75 @@ namespace appWeb2.Controllers
         {
             var juegos = await _context.VideoJuegos
                 .Where(v => v.EnPromocion)
+                .ToListAsync();
+            
+            return View(juegos);
+        }
+
+        public IActionResult JuegosVnetas()
+        {
+            return View();
+        }
+
+        [AuthorizeRole("Usuario")]
+        public async Task<IActionResult> JuegosVentas(int pagina = 1)
+        {
+            int paginador = 10;
+            
+            var juegos = await _context.VideoJuegos
+                .Include(v => v.Categoria)
+                .OrderBy(v => v.titulo)
+                .Skip((pagina - 1) * paginador)
+                .Take(paginador)
+                .ToListAsync();
+
+            ViewBag.TotalPaginas = (int)Math.Ceiling((double)await _context.VideoJuegos.CountAsync() / paginador);
+            ViewBag.PaginaActual = pagina;
+
+            return View(juegos);
+        }
+
+        [AuthorizeRole("Usuario")]
+        public async Task<IActionResult> NuevosJuegosUsuario()
+        {
+            var juegos = await _context.VideoJuegos
+                .Include(v => v.Categoria)
+                .OrderByDescending(v => v.FechaCreacion)
+                .Take(15)
+                .ToListAsync();
+            
+            return View(juegos);
+        }
+
+        [AuthorizeRole("Usuario")]
+        public async Task<IActionResult> CategoriasUsuario()
+        {
+            var categorias = await _context.Categorias
+                .OrderBy(c => c.categoria)
+                .ToListAsync();
+
+            return View(categorias);
+        }
+
+        [AuthorizeRole("Usuario")]
+        public async Task<IActionResult> JuegosPorCategoriaUsuario(int idcategoria)
+        {
+            var juegos = await _context.VideoJuegos
+                .Where(v => v.idcategoria == idcategoria)
+                .Include(v => v.Categoria)
+                .ToListAsync();
+
+            var categoria = await _context.Categorias.FindAsync(idcategoria);
+            ViewBag.NombreCategoria = categoria?.categoria ?? "Categoría desconocida";
+            return View(juegos);
+        }
+
+        [AuthorizeRole("Usuario")]
+        public async Task<IActionResult> PromocionesUsuario()
+        {
+            var juegos = await _context.VideoJuegos
+                .Where(v => v.EnPromocion)
+                .Include(v => v.Categoria)
                 .ToListAsync();
             
             return View(juegos);

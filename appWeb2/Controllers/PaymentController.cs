@@ -237,20 +237,18 @@ namespace appWeb2.Controllers
                 var userIdStr = HttpContext.Session.GetString("UsuarioId");
                 if (!int.TryParse(userIdStr, out int usuarioId))
                 {
-                    // Si no hay usuario en sesión, usar un usuario por defecto para pruebas
                     Console.WriteLine("WARNING: No hay UsuarioId en sesión, usando usuario por defecto para pruebas");
-                    usuarioId = 1; // Usuario por defecto para pruebas - cambiar en producción
+                    usuarioId = 1;
                 }
 
-                // Obtener datos del carrito desde la sesión (temporalmente usaremos un juego de ejemplo)
                 var juegoIdStr = HttpContext.Session.GetString("JuegoId");
                 var cantidadStr = HttpContext.Session.GetString("Cantidad");
                 
                 if (!int.TryParse(juegoIdStr, out int videoJuegosId))
-                    videoJuegosId = 1; // Valor por defecto si no hay sesión
+                    videoJuegosId = 1;
                     
                 if (!int.TryParse(cantidadStr, out int cantidad))
-                    cantidad = 1; // Valor por defecto si no hay sesión
+                    cantidad = 1;
 
                 // Crear compra
                 var compra = new Compra
@@ -262,7 +260,6 @@ namespace appWeb2.Controllers
                 _context.Compras.Add(compra);
                 await _context.SaveChangesAsync();
 
-                // Obtener el monto del primer purchase unit
                 decimal total = 0;
                 if (paypalOrder.TryGetProperty("purchase_units", out var purchaseUnits) && purchaseUnits.ValueKind == System.Text.Json.JsonValueKind.Array && purchaseUnits.GetArrayLength() > 0)
                 {
@@ -283,7 +280,6 @@ namespace appWeb2.Controllers
                     }
                 }
                 
-                // Si no se pudo obtener el monto de PayPal, usar el precio del juego
                 if (total == 0)
                 {
                     var juego = _context.VideoJuegos.FirstOrDefault(v => v.Id == videoJuegosId);
@@ -294,7 +290,6 @@ namespace appWeb2.Controllers
                     }
                 }
 
-                // Crear detalles de compra con datos dinámicos
                 var detalleCompra = new DetalleCompra
                 {
                     idCompra = compra.Id,

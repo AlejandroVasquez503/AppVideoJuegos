@@ -1,6 +1,7 @@
 using appWeb2.Data;
 using appWeb2.Services;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,8 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 app.UseSession();
+
+RotativaConfiguration.Setup(@"C:\Program Files\wkhtmltopdf\bin", "");
 
 app.MapControllerRoute(
     name: "default",

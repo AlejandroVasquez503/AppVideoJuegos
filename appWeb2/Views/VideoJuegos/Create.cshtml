@@ -1,51 +1,68 @@
 ﻿@model appWeb2.Models.VideoJuegos
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
 
-<h2>Crear Videojuego</h2>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="text-primary mb-4">
+                <i class="fas fa-plus me-2"></i>Crear Videojuego
+            </h2>
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    <div>
-        <label>Titulo</label>
-        <input asp-for="titulo" class="form-control" />
-        <span asp-validation-for="titulo"></span>
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label asp-for="titulo" class="form-label">Título</label>
+                    <input asp-for="titulo" class="form-control" />
+                    <span asp-validation-for="titulo" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="precio" class="form-label">Precio</label>
+                    <input asp-for="precio" class="form-control" />
+                    <span asp-validation-for="precio" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="idcategoria" class="form-label">Categoría</label>
+                    <select asp-for="idcategoria" asp-items="@(ViewBag.Categorias as SelectList)" class="form-control">
+                        <option value="">-- Selecciona una categoría --</option>
+                    </select>
+                    <span asp-validation-for="idcategoria" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="descripcion" class="form-label">Descripción</label>
+                    <textarea asp-for="descripcion" class="form-control" rows="4"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="EdadMinima" class="form-label">Edad Mínima</label>
+                    <input asp-for="EdadMinima" class="form-control" placeholder="Ej: +12, +18, +3" />
+                    <span asp-validation-for="EdadMinima" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Imagen</label>
+                    <input type="file" name="archivoImagen" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input type="checkbox" asp-for="EnPromocion" class="form-check-input" />
+                        <label asp-for="EnPromocion" class="form-check-label">En Promoción</label>
+                    </div>
+                </div>
+
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <button type="submit" class="btn btn-primary me-2">
+                    <i class="fas fa-save me-2"></i>Guardar
+                </button>
+                <a href="@Url.Action("Index", "VideoJuegos")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Regresar a Videojuegos
+                </a>
+            </form>
+        </div>
     </div>
-
-    <div>
-        <label>Precio</label>
-        <input asp-for="precio" class="form-control" />
-        <div asp-validation-summary="All" class="text-danger"></div>
-        <span asp-validation-for="precio"></span>
-    </div>
-
-    <div>
-        <label>Categoria</label>
-        <select asp-for="idcategoria" asp-items="@(ViewBag.Categorias as SelectList)" class="form-control">
-            <option value="">-- Selecciona una categoría --</option>
-        </select>
-        <span asp-validation-for="idcategoria"></span>
-    </div>
-
-    <div>
-        <label>Descripción</label>
-        <textarea asp-for="descripcion" class="form-control"></textarea>
-    </div>
-
-    <div>
-        <label>Edad Mínima</label>
-        <input asp-for="EdadMinima" class="form-control" placeholder="Ej: +12, +18, +3" />
-        <span asp-validation-for="EdadMinima"></span>
-    </div>
-
-    <div>
-        <label>Imagen</label><br> <br>
-        <input type="file" name="archivoImagen" class="form-control" /> <br>
-    </div>
-
-    <div>
-        <label>
-            <input type="checkbox" asp-for="EnPromocion" />
-            En Promoción
-        </label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Guardar</button>
-</form>
+</div>

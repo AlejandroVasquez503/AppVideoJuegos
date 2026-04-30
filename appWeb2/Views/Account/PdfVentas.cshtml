@@ -1,0 +1,130 @@
+@model IEnumerable<appWeb2.Models.VentaViewModel>
+@{
+    Layout = null;
+    ViewData["Title"] = "Reporte de Ventas";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #007bff;
+            margin: 0;
+        }
+        .header p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .info-filtros {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="~/imagenes/LogonSinFondo.png" alt="GameStore Logo" style="height: 80px;" />
+        </div>
+        <h1>GameStore - Reporte de Ventas</h1>
+        <p>Fecha de generación: @DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")</p>
+        <p>Generado por: @(Context.Session.GetString("usuario") ?? "Sistema")</p>
+    </div>
+
+    <div class="info-filtros">
+        <h3>Período del Reporte</h3>
+        <p>
+            <strong>Desde:</strong> @(ViewBag.Desde?.ToString("dd/MM/yyyy") ?? "Inicio")<br>
+            <strong>Hasta:</strong> @(ViewBag.Hasta?.ToString("dd/MM/yyyy") ?? "Fecha actual")
+        </p>
+        <p><strong>Total de registros:</strong> @Model.Count()</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID Compra</th>
+                <th>Usuario</th>
+                <th>Videojuego</th>
+                <th>Cantidad</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Fecha Transacción</th>
+                <th>Código Transacción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var venta in Model)
+            {
+                <tr>
+                    <td>@venta.idCompra</td>
+                    <td>@venta.NombreUsuario</td>
+                    <td>@venta.NombreVideojuego</td>
+                    <td>@venta.cantidad</td>
+                    <td>$@venta.total.ToString("F2")</td>
+                    <td>@venta.estadoCompra</td>
+                    <td>@venta.fechaHoraTransaccion.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                    <td>@venta.codigoTransaccion</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="3"><strong>TOTAL GENERAL:</strong></td>
+                <td><strong>$@Model.Sum(v => v.total).ToString("F2")</strong></td>
+                <td colspan="3"></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="footer">
+        <p>GameStore © 2026 - Sistema de Gestión de Videojuegos</p>
+        <p>Este documento es un reporte generado automáticamente y no requiere firma</p>
+    </div>
+</body>
+</html>

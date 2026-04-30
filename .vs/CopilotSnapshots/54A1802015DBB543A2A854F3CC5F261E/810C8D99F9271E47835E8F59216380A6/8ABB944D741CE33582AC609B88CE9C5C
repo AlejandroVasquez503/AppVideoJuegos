@@ -1,0 +1,202 @@
+﻿using appWeb2.Data;
+using appWeb2.Filtros;
+using appWeb2.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+
+namespace appWeb2.Controllers
+{
+    public class VideoJuegosController : Controller
+    {
+        private readonly AppDbContext _context;
+
+        public VideoJuegosController(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        [AuthorizeRole("Admin")]
+        public async Task<IActionResult> Index()
+        {
+            var juegos = await _context.VideoJuegos.ToListAsync();
+            return View(juegos);
+        }
+
+        [AuthorizeRole("Admin")]
+        public async Task<IActionResult> Create()
+        {
+            var categorias = await _context.Categorias.ToListAsync();
+            ViewBag.Categorias = new SelectList(categorias, "idcategoria", "categoria");
+            return View();
+        }
+
+        [AuthorizeRole("Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(VideoJuegos juego, IFormFile archivoImagen)
+        {
+            if (!ModelState.IsValid)
+                return View(juego);
+
+            juego.FechaCreacion = DateTime.Now;
+
+            if (archivoImagen != null && archivoImagen.Length > 0)
+            {
+                var nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(archivoImagen.FileName);
+
+                var ruta = Path.Combine(Directory.GetCurrentDirectory(), 
+                    "wwwroot/imagenes", nombreArchivo);
+
+                using (var stream = new FileStream(ruta, FileMode.Create))
+                {
+                    await archivoImagen.CopyToAsync(stream);
+                }
+
+                juego.imagen = "/imagenes/" + nombreArchivo;
+            }
+
+            _context.VideoJuegos.Add(juego);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var juego = await _context.VideoJuegos.FindAsync(id);
+            if (juego == null) return NotFound();
+
+            var categorias = await _context.Categorias.ToListAsync();
+            ViewBag.Categorias = new SelectList(categorias, "idcategoria", "categoria");
+
+            return View(juego);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, VideoJuegos juego, IFormFile? archivoImagen)
+        {
+            if (id != juego.Id) return NotFound();
+
+            var juegoBD = await _context.VideoJuegos.FindAsync(id);
+
+            if(juegoBD == null)
+                return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                juegoBD.titulo = juego.titulo;
+                juegoBD.precio = juego.precio;
+                juegoBD.idcategoria = juego.idcategoria;
+                juegoBD.descripcion = juego.descripcion;
+                juegoBD.EnPromocion = juego.EnPromocion;
+                juegoBD.EdadMinima = juego.EdadMinima;
+
+                if (archivoImagen != null && archivoImagen.Length > 0)
+                {
+                    if (!string.IsNullOrEmpty(juegoBD.imagen))
+                    {
+                        var rutaAnterior = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        juegoBD.imagen.TrimStart('/')
+                        );
+
+                        if (System.IO.File.Exists(rutaAnterior))
+                            System.IO.File.Delete(rutaAnterior);
+                    }
+                    var nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(archivoImagen.FileName);
+
+                    var rutaNueva = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot/imagenes", 
+                        nombreArchivo
+                     );
+                    using (var stream = new FileStream(rutaNueva, FileMode.Create))
+                    {
+                        await archivoImagen.CopyToAsync(stream);
+                    }
+                    juegoBD.imagen = "/imagenes/" + nombreArchivo;
+                }
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(juego);
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var juego = await _context.VideoJuegos
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (juego == null) return NotFound();
+
+            return View(juego);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var juego = await _context.VideoJuegos.FindAsync(id);
+
+            if (juego != null)
+            {
+                _context.VideoJuegos.Remove(juego);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Categorias()
+        {
+            var categorias = await _context.Categorias
+                .OrderBy(c => c.categoria)
+                .ToListAsync();
+
+            return View(categorias);
+        }
+
+        public async Task<IActionResult> JuegosPorCategoria(int idcategoria)
+        {
+            var juegos = await _context.VideoJuegos
+                .Where(v => v.idcategoria == idcategoria)
+                .Include(v => v.Categoria)
+                .ToListAsync();
+
+            var categoria = await _context.Categorias.FindAsync(idcategoria);
+            ViewBag.NombreCategoria = categoria?.categoria ?? "Categoría desconocida";
+            return View(juegos);
+        }
+
+        public async Task<IActionResult> NuevosJuegos()
+        {
+            var juegos = await _context.VideoJuegos
+                .OrderByDescending(v => v.FechaCreacion)
+                .Take(15)
+                .ToListAsync();
+            
+            return View(juegos);
+        }
+
+        public async Task<IActionResult> Promociones()
+        {
+            var juegos = await _context.VideoJuegos
+                .Where(v => v.EnPromocion)
+                .ToListAsync();
+            
+            return View(juegos);
+        }
+
+        public IActionResult JuegosVnetas()
+        {
+            return View();
+        }
+    }
+}

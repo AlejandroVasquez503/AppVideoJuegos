@@ -11,5 +11,7 @@
         public string estadoCompra { get; set; }
         public DateTime fechaHoraTransaccion { get; set; }
         public string codigoTransaccion { get; set; }
+        public string NombreUsuario { get; set; }
+        public string NombreVideojuego { get; set; }
     }
 }

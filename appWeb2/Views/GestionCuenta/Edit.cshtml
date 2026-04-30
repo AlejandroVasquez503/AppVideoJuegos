@@ -1,0 +1,93 @@
+@model appWeb2.Models.Usuario
+@{
+    ViewData["Title"] = "Editar Mi Cuenta";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="text-center mb-4">
+                <h2 class="text-white">Editar Mi Cuenta</h2>
+            </div>
+            
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Id" />
+                
+                <div class="form-group mb-3">
+                    <label asp-for="nombre" class="form-label">Nombre de Usuario</label>
+                    <input asp-for="nombre" class="form-control" placeholder="Ingresa tu nombre de usuario" />
+                    <span asp-validation-for="nombre" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="correo" class="form-label">Correo Electrónico</label>
+                    <input asp-for="correo" class="form-control" type="email" readonly />
+                    <span asp-validation-for="correo" class="text-danger"></span>
+                    <small class="text-muted">El correo no se puede modificar</small>
+                </div>
+
+                <hr class="my-4">
+
+                <h5 class="text-white mb-3">Cambiar Contraseña</h5>
+
+                <div class="form-group mb-3">
+                    <label asp-for="password" class="form-label">Nueva Contraseña</label>
+                    <input asp-for="password" class="form-control" type="password" placeholder="Ingresa nueva contraseña" />
+                    <span asp-validation-for="password" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirma nueva contraseña" />
+                    <span id="confirmPasswordError" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success w-100">
+                        Guardar Cambios
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="@Url.Action("Index")" class="text-decoration-none">
+                    <strong>Cancelar</strong>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Validación de coincidencia de contraseñas
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorElement = document.getElementById('confirmPasswordError');
+            
+            if (password && confirmPassword && password !== confirmPassword) {
+                e.preventDefault();
+                errorElement.textContent = 'Las contraseñas no coinciden';
+            } else {
+                errorElement.textContent = '';
+            }
+        });
+
+        // Limpiar error al escribir en confirmación
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            document.getElementById('confirmPasswordError').textContent = '';
+        });
+    </script>
+}

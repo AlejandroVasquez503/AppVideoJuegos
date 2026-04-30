@@ -27,32 +27,110 @@
                 <div class="collapse navbar-collapse" id="menuNavbar">
 
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
+                        @{
+                            var usuario = Context.Session.GetString("usuario");
+                            var rol = Context.Session.GetString("rol");
+                            
+                            if (!string.IsNullOrEmpty(usuario))
+                            {
+                                if (rol == "Admin")
+                                {
+                                    
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="VideoJuegos" asp-action="Create">Añadir Videojuego</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    // Usuario normal logueado - mostrar opciones específicas
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="VideoJuegos" asp-action="JuegosVentas">Inicio</a>
+                                    </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Contacts">Contactos</a>
-                        </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="VideoJuegos" asp-action="NuevosJuegosUsuario">Lo Nuevo</a>
+                                    </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="VideoJuegos" asp-action="Index">Lo Nuevo</a>
-                        </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="VideoJuegos" asp-action="CategoriasUsuario">Categorías</a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="VideoJuegos" asp-action="PromocionesUsuario">Promociones</a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Account" asp-action="MisJuegos">Mis Juegos</a>
+                                    </li>
+
+                                }
+                            }
+                            else
+                            {
+                                // Usuario no logueado - mostrar opciones generales
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="Contacts">Contactos</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="VideoJuegos" asp-action="Index">Lo Nuevo</a>
+                                </li>
+                            }
+                        }
                     </ul>
 
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Account" asp-action="Index">
-                                Iniciar Sesión
-                            </a>
-                        </li>
+                        @if (!string.IsNullOrEmpty(usuario))
+                        {
+                                // Usuario logueado
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-solid fa-user me-2"></i>@usuario
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="GestionCuenta" asp-action="Index">
+                                                <i class="fa-solid fa-user-cog me-2"></i>Mi Cuenta
+                                            </a>
+                                        </li>
+                                        @if (rol == "Admin")
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="Account" asp-action="Dashboard">
+                                                    <i class="fa-solid fa-tachometer-alt me-2"></i>Panel Admin
+                                                </a>
+                                            </li>
+                                        }
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Account" asp-action="Logout">
+                                                <i class="fa-solid fa-sign-out-alt me-2"></i>Cerrar Sesión
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                // Usuario no logueado
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Account" asp-action="Login">
+                                        Iniciar Sesión
+                                    </a>
+                                </li>
 
-                        <li class="nav-item">
-                            <a class="btn btn-accent ms-2"
-                                   asp-controller="Account" asp-action="Register">
-                                Registrarse
-                            </a>
-                        </li>
+                                <li class="nav-item">
+                                    <a class="btn btn-accent ms-2"
+                                           asp-controller="Account" asp-action="Register">
+                                        Registrarse
+                                    </a>
+                                </li>
+                            }
+                        }
                     </ul>
 
                 </div>
@@ -80,6 +158,6 @@
    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

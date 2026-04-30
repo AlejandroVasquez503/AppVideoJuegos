@@ -1,0 +1,56 @@
+@model appWeb2.Models.Usuario
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">
+        <i class="fas fa-user-times me-2"></i>Eliminar Usuario
+    </h2>
+
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Confirmar Eliminación</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>¡Atención!</strong> ¿Está seguro de que desea eliminar este usuario? Esta acción no se puede deshacer.
+            </div>
+
+            <dl class="row">
+                <dt class="col-sm-3">ID:</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
+
+                <dt class="col-sm-3">Nombre:</dt>
+                <dd class="col-sm-9">@Model.nombre</dd>
+
+                <dt class="col-sm-3">Correo:</dt>
+                <dd class="col-sm-9">@Model.correo</dd>
+
+                <dt class="col-sm-3">Rol:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge @(Model.Rol?.rol == "Admin" ? "bg-danger" : "bg-success")">
+                        @(Model.Rol?.rol ?? "Sin rol")
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3">Fecha Registro:</dt>
+                <dd class="col-sm-9">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</dd>
+            </dl>
+
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Eliminar Usuario
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary ms-2">
+                        <i class="fas fa-arrow-left me-2"></i>Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,105 @@
+@model appWeb2.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Registrarse";
+    Layout = "~/Views/Shared/_LayoutSinBanner.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="text-center mb-4">
+                <h2 class="text-white">Crear Nueva Cuenta</h2>
+            </div>
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Register" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="nombre" class="form-label">Ingrese un nombre de usuario</label>
+                            <input asp-for="nombre" class="form-control" placeholder="Ej: usuario123" />
+                            <span asp-validation-for="nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="correo" class="form-label">Correo Electrónico</label>
+                            <input asp-for="correo" class="form-control" type="email" placeholder="correo@ejemplo.com" />
+                            <span asp-validation-for="correo" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="PasswordInput" class="form-label">Contraseña</label>
+                            <input asp-for="PasswordInput" class="form-control" type="password" placeholder="Ingresa una contraseña segura" />
+                            <span asp-validation-for="PasswordInput" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label">Confirmar Contraseña</label>
+                            <input asp-for="ConfirmPassword" class="form-control" type="password" placeholder="Confirma tu contraseña" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="idRol" class="form-label">Rol</label>
+                            <select asp-for="idRol" class="form-control">
+                                <option value="">-- Seleccione un rol --</option>
+                                <option value="2">Usuario</option>
+                                <option value="1">Administrador</option>
+                            </select>
+                            <span asp-validation-for="idRol" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success w-100">
+                                Registrarse
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <p class="mb-0 text-white">¿Ya tienes una cuenta? 
+                            <a asp-action="Login" class="text-decoration-none">
+                                <strong>Inicia sesión aquí</strong>
+                            </a>
+                        </p>
+                    </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Validación de coincidencia de contraseñas
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const password = document.getElementById('PasswordInput').value;
+            const confirmPassword = document.getElementById('ConfirmPassword').value;
+            const errorElement = document.getElementById('ConfirmPassword').validationMessage || document.getElementById('confirmPasswordError');
+            
+            if (password && confirmPassword && password !== confirmPassword) {
+                e.preventDefault();
+                errorElement.textContent = 'Las contraseñas no coinciden';
+            } else {
+                errorElement.textContent = '';
+            }
+        });
+
+        // Limpiar error al escribir en confirmación
+        document.getElementById('ConfirmPassword').addEventListener('input', function() {
+            const errorElement = document.getElementById('confirmPasswordError');
+            if (errorElement) {
+                errorElement.textContent = '';
+            }
+        });
+    </script>
+}

@@ -1,0 +1,61 @@
+@model appWeb2.Models.Usuario
+@{
+    ViewData["Title"] = "Mi Cuenta";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="text-center mb-4">
+                <h2 class="text-white">Mi Cuenta</h2>
+            </div>
+            
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="mb-4">
+                <div class="text-center mb-3">
+                    <div class="avatar-circle">
+                        <span class="user-initial">@Model.nombre?.Substring(0, 1).ToUpper()</span>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <h4 class="text-white mb-1">@Model.nombre</h4>
+                    <p class="text-muted mb-2">@Model.correo</p>
+                    <span class="badge bg-success">@Model.Rol?.rol</span>
+                </div>
+            </div>
+
+            <div class="d-grid">
+                <a href="@Url.Action("Edit")" class="btn btn-primary">
+                    Editar Perfil
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .avatar-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: #007bff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        border: 3px solid #0056b3;
+    }
+
+    .user-initial {
+        color: white;
+        font-size: 32px;
+        font-weight: bold;
+    }
+</style>

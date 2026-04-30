@@ -1,0 +1,248 @@
+﻿using appWeb2.Data;
+using appWeb2.Filtros;
+using appWeb2.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace appWeb2.Controllers
+    {
+        public class AccountController : Controller
+        {
+            private readonly AppDbContext _context;
+
+            public AccountController(AppDbContext context)
+                {
+                    _context = context;
+                }
+
+            public IActionResult Index()
+                {
+                    return RedirectToAction("Login");
+                }
+
+            [AuthorizeRole("Admin")]
+            public IActionResult Dashboard()
+                {
+                    var categorias = _context.Categorias.ToList();
+                    ViewBag.Categorias = categorias;
+
+                    return View();
+                }
+        
+            public IActionResult ObtenerDatos(int? idcategoria)
+            {
+                var query = from v in _context.VideoJuegos
+                            join c in _context.Categorias
+                            on v.idcategoria equals c.idcategoria
+                            select new { c.idcategoria, c.categoria };
+
+                if(idcategoria.HasValue && idcategoria > 0)
+                {
+                    query = query.Where(x => x.idcategoria == idcategoria);
+                } 
+
+                var data = query
+                    .GroupBy(x => new { x.idcategoria, x.categoria })
+                    .Select(g => new
+                    {
+                        idcategoria = g.Key.idcategoria,
+                        categoria = g.Key.categoria,
+                        total = g.Count()
+                    }).ToList();
+
+                return Json(data);
+            }
+
+            public IActionResult ObtenerPromociones(int? idcategoria)
+            {
+                var query = from v in _context.VideoJuegos
+                            join c in _context.Categorias
+                            on v.idcategoria equals c.idcategoria
+                            select v;
+
+                if(idcategoria.HasValue && idcategoria > 0)
+                {
+                    query = query.Where(x => x.idcategoria == idcategoria);
+                }
+
+                var data = query
+                    .GroupBy(x => x.EnPromocion)
+                    .Select(g => new
+                    {
+                        estado = g.Key ? "En Promoción" : "Sin Promoción",
+                        total = g.Count()
+                    }).ToList();
+
+                return Json(data);
+            }
+
+            public IActionResult ObtenerIngresosEstimados(int? idcategoria)
+            {
+                var query = from v in _context.VideoJuegos
+                            join c in _context.Categorias
+                            on v.idcategoria equals c.idcategoria
+                            select new { v.precio, c.categoria, v.idcategoria };
+
+                if(idcategoria.HasValue && idcategoria > 0)
+                {
+                    query = query.Where(x => x.idcategoria == idcategoria);
+                }
+
+                var data = query
+                    .GroupBy(x => new { x.idcategoria, x.categoria })
+                    .Select(g => new
+                    {
+                        idcategoria = g.Key.idcategoria,
+                        categoria = g.Key.categoria,
+                        cantidad = g.Count(),
+                        precioPromedio = g.Average(x => x.precio),
+                        ingresoEstimado = g.Count() * g.Average(x => x.precio)
+                    })
+                    .OrderByDescending(x => x.ingresoEstimado)
+                    .ToList();
+
+                return Json(data);
+            }
+
+            public IActionResult ObtenerPreciosJuegos(int? idcategoria)
+            {
+                var query = from v in _context.VideoJuegos
+                            join c in _context.Categorias
+                            on v.idcategoria equals c.idcategoria
+                            select new { v.titulo, v.precio, c.categoria, v.idcategoria };
+
+                if(idcategoria.HasValue && idcategoria > 0)
+                {
+                    query = query.Where(x => x.idcategoria == idcategoria);
+                }
+
+                var data = query
+                    .OrderBy(x => x.titulo)
+                    .Select(x => new
+                    {
+                        titulo = x.titulo,
+                        precio = x.precio,
+                        categoria = x.categoria
+                    }).ToList();
+
+                return Json(data);
+            }
+            public IActionResult Login ()
+                {
+                return View();
+                }
+
+
+            public async Task<IActionResult> DetalleVentas(DateTime? desde, DateTime? hasta, int pagina=1)
+            {
+                int paginador = 10;
+
+                var query = _context.detalle_compra
+                        .Include(d => d.Compra)
+                        .Include(d => d.VideoJuegos)
+                        .AsQueryable();
+            
+                if(desde.HasValue)
+                {
+                    query = query.Where(x => x.fechaHoraTransaccion >= desde.Value);
+                }
+
+                if(hasta.HasValue)
+                {
+                    query = query.Where(x => x.fechaHoraTransaccion <= hasta);
+                }
+
+                var datos = await query
+                    .OrderByDescending(x => x.fechaHoraTransaccion)
+                    .Skip((pagina - 1) * paginador)
+                    .Take(paginador)
+                    .Select(x => new VentaViewModel
+                    {
+                        idCompra = x.idCompra,
+                        VideoJuegosId = x.VideoJuegosId,
+                        cantidad = x.cantidad,
+                        total = x.total,
+                        estadoCompra = x.estadoCompra,
+                        fechaHoraTransaccion = x.fechaHoraTransaccion,
+                        codigoTransaccion = x.codigoTransaccion
+                    })
+                    .ToListAsync(); 
+
+                    ViewBag.TotalPaginas = (int)Math.Ceiling((double)query.Count() / paginador);
+                    ViewBag.PaginaActual = pagina;
+                    ViewBag.Desde = desde;
+                    ViewBag.Hasta = hasta;
+
+                return View(datos);
+            }
+
+
+
+
+
+
+        [HttpPost]
+            [ValidateAntiForgeryToken]
+            public IActionResult Login(Login model)
+            {
+                var user = _context.Usuarios
+                    .Include(u => u.Rol)
+                    .FirstOrDefault(u => u.correo == model.correo);
+
+                if (user != null)
+                {
+                    string saltedPassword = model.password + user.salt;
+
+                    using (SHA256 sha256 = SHA256.Create())
+                    {
+                        byte[] inputBytes = Encoding.Unicode.GetBytes(saltedPassword);
+                        byte[] hashBytes = sha256.ComputeHash(inputBytes);
+                        Console.WriteLine("Password input: " + model.password);
+                        Console.WriteLine("Salt DB: " + user.salt);
+                        Console.WriteLine("Concatenado: " + saltedPassword);
+
+                        Console.WriteLine("Hash generado: " + Convert.ToBase64String(hashBytes));
+                        Console.WriteLine("Hash DB: " + user.password);
+
+                        if (hashBytes.SequenceEqual(user.password))
+                        {
+                            HttpContext.Session.SetString("usuario", user.nombre);
+                            HttpContext.Session.SetString("UsuarioId", user.Id.ToString());
+
+                            if (user.Rol != null)
+                            {
+                                HttpContext.Session.SetString("rol", user.Rol.rol);
+                            }
+
+                            if (user.Rol != null && user.Rol.rol == "Admin")
+                            {
+                                return RedirectToAction("Dashboard", "Account");
+                            }
+                            else
+                            {
+                                return RedirectToAction("JuegosVentas", "Home");
+                            }
+                        }
+                    }
+
+                }
+
+                ViewBag.Error = "Credenciales incorrectos";
+                return View();
+            }
+
+            public IActionResult Logout()
+            {
+                HttpContext.Session.Clear();
+                return RedirectToAction("Login");
+            }
+
+            public IActionResult AccessDenied()
+            {
+                return View();
+            }
+        }
+}
+    
